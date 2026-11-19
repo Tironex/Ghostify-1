@@ -1,0 +1,195 @@
+/* Ghostify "Ghost" theme.
+ *
+ * Colours come from color.ini (--spice-* variables, injected by Ghostify).
+ * Spotify's own class names change between releases, so the rules below stick
+ * to the long-lived layout hooks and also set Spotify's own custom properties,
+ * which keeps the look intact even where a class name has moved.
+ */
+
+:root {
+  --ghost-border: rgba(255, 255, 255, 0.09);
+  --ghost-border-strong: rgba(255, 255, 255, 0.18);
+  --ghost-glow: rgba(255, 255, 255, 0.06);
+  --ghost-radius: 14px;
+
+  --background-base: var(--spice-main) !important;
+  --background-highlight: var(--spice-highlight) !important;
+  --background-press: var(--spice-highlight-elevated) !important;
+  --background-elevated-base: var(--spice-main-elevated) !important;
+  --background-elevated-highlight: var(--spice-highlight) !important;
+  --background-tinted-base: var(--spice-highlight) !important;
+  --text-base: var(--spice-text) !important;
+  --text-subdued: var(--spice-subtext) !important;
+  --text-bright-accent: var(--spice-text) !important;
+  --essential-base: var(--spice-text) !important;
+  --essential-bright-accent: var(--spice-button) !important;
+  --essential-subdued: var(--spice-button-disabled) !important;
+  --decorative-base: var(--spice-text) !important;
+  --decorative-subdued: var(--spice-misc) !important;
+}
+
+html,
+body,
+.Root,
+.Root__top-container {
+  background: var(--spice-main) !important;
+  color: var(--spice-text);
+}
+
+/* Layout: rounded panels separated by thin light borders. */
+.Root__nav-bar,
+.main-view-container,
+.Root__right-sidebar,
+.main-nowPlayingView-contentWrapper,
+.main-yourLibraryX-libraryContainer {
+  background: var(--spice-main) !important;
+  border: 1px solid var(--ghost-border);
+  border-radius: var(--ghost-radius);
+}
+
+.main-view-container__scroll-node-child,
+.main-home-content {
+  background:
+    radial-gradient(ellipse 70% 40% at 80% 0%, var(--ghost-glow), transparent 70%),
+    var(--spice-main) !important;
+}
+
+.main-topBar-background,
+.main-topBar-overlay {
+  background: transparent !important;
+}
+
+/* Navigation: active entry is a soft grey pill. */
+.main-navBar-navBar a,
+.main-yourLibraryX-navLink {
+  border-radius: 10px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.main-navBar-navBar a[aria-current="page"],
+.main-navBar-navBar a.active {
+  background: var(--spice-highlight-elevated) !important;
+  color: var(--spice-text) !important;
+}
+
+/* Cards: dark glass tiles with a thin border. */
+.main-card-card,
+.main-shelf-shelf .main-card-card {
+  background: var(--spice-card) !important;
+  border: 1px solid var(--ghost-border);
+  border-radius: var(--ghost-radius);
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.main-card-card:hover {
+  border-color: var(--ghost-border-strong);
+  transform: translateY(-2px);
+}
+
+.main-card-imageContainer img,
+.main-image-image {
+  filter: grayscale(1) contrast(1.05);
+  transition: filter 0.25s ease;
+}
+
+.main-card-card:hover .main-card-imageContainer img,
+.main-nowPlayingWidget-nowPlaying .main-image-image,
+.main-nowPlayingView-coverArt .main-image-image {
+  filter: grayscale(0.2);
+}
+
+/* Player bar. */
+.main-nowPlayingBar-container,
+.main-nowPlayingBar-nowPlayingBar {
+  background: var(--spice-player) !important;
+  border-top: 1px solid var(--ghost-border);
+}
+
+.player-controls__buttons button,
+.main-nowPlayingBar-extraControls button {
+  color: var(--spice-subtext);
+}
+
+.player-controls__buttons button:hover,
+.main-nowPlayingBar-extraControls button:hover {
+  color: var(--spice-text);
+}
+
+/* Play/pause: white disc with a black glyph. */
+.player-controls__buttons button[data-testid="control-button-playpause"] {
+  background: var(--spice-button) !important;
+  color: #000 !important;
+  border-radius: 50%;
+  box-shadow: 0 0 22px rgba(255, 255, 255, 0.22);
+}
+
+/* Progress and volume: thin white bars, no green. */
+.playback-progressbar,
+.volume-bar {
+  --progress-bar-height: 3px;
+  --fg-color: var(--spice-button);
+  --bg-color: rgba(255, 255, 255, 0.18);
+}
+
+.playback-progressbar [class*="progressBarFg"],
+.volume-bar [class*="progressBarFg"] {
+  background-color: var(--spice-button) !important;
+}
+
+/* Inputs and search field. */
+input[type="search"],
+[data-testid="search-input"],
+.x-searchInput-searchInputInput {
+  background: var(--spice-highlight) !important;
+  border: 1px solid var(--ghost-border);
+  border-radius: 999px;
+  color: var(--spice-text) !important;
+}
+
+input:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--spice-button);
+  outline-offset: 2px;
+}
+
+/* Replace the green "now playing" and "liked" accents with white. */
+[class*="playing"] svg,
+button[aria-checked="true"] svg {
+  fill: var(--spice-text);
+}
+
+.main-trackList-selected,
+.main-trackList-active .main-trackList-rowTitle {
+  color: var(--spice-text) !important;
+}
+
+/* Scrollbars. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+::selection {
+  background: rgba(255, 255, 255, 0.85);
+  color: #000;
+}
+
+/* Notifications. */
+.main-notificationBubble-container,
+[data-testid="toast"] {
+  background: var(--spice-notification) !important;
+  border: 1px solid var(--ghost-border-strong);
+  color: var(--spice-text) !important;
+}

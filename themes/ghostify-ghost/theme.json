@@ -1,0 +1,11 @@
+{
+  "id": "ghostify/ghost",
+  "name": "Ghost",
+  "version": "1.0.0",
+  "author": "Ghostify",
+  "description": "Black and white Ghostify look: deep black surfaces, thin light borders, white accents.",
+  "css": "user.css",
+  "color_ini": "color.ini",
+  "default_scheme": "Ghost",
+  "mode": "dark"
+}
