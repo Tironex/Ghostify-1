@@ -2,14 +2,21 @@ name: Build Ghostify
 
 # Builds installers for Windows, Linux and macOS on GitHub's own machines, so nothing has to be
 # installed locally. Start it by hand: Actions tab -> "Build Ghostify" -> Run workflow.
-# Pushing a tag like v0.1.0 builds as well.
+# Pushing a tag like v0.1.0 builds as well. The installers are attached to a GitHub release,
+# which is where `installer.py` downloads them from.
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to publish the build under (for example v0.1.0)"
+        required: true
+        default: "v0.1.0"
   push:
     tags: ["v*"]
 
+# Publishing the installers as a GitHub release needs write access to the repository.
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -24,6 +31,19 @@ jobs:
           - { name: macOS, os: macos-latest, artifact: ghostify-macos }
     steps:
       - uses: actions/checkout@v4
+
+      # Browser uploads of many folders often lose files. If a source.zip is in the repository, it
+      # is unpacked over the checkout, so the build always sees the complete project.
+      - name: Unpack source.zip
+        shell: python
+        run: |
+          import os, zipfile
+          if os.path.exists("source.zip"):
+              with zipfile.ZipFile("source.zip") as archive:
+                  archive.extractall(".")
+              print("source.zip unpacked")
+          else:
+              print("no source.zip, building the files as uploaded")
 
       - name: Linux system libraries
         if: runner.os == 'Linux'
@@ -67,12 +87,29 @@ jobs:
       - name: Collect files
         shell: bash
         run: |
-          mkdir -p out
+          mkdir -p out release
           cp -r src-tauri/target/release/bundle out/bundle
-          cp target/release/ghostify out/ 2>/dev/null || cp target/release/ghostify.exe out/
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            cp target/release/ghostify.exe out/
+            cp target/release/ghostify.exe release/ghostify-windows-x64.exe
+          else
+            cp target/release/ghostify out/
+            cp target/release/ghostify "release/ghostify-$(echo "$RUNNER_OS" | tr '[:upper:]' '[:lower:]')-$(echo "$RUNNER_ARCH" | tr '[:upper:]' '[:lower:]')"
+          fi
+          find src-tauri/target/release/bundle -type f \( -name '*-setup.exe' -o -name '*.msi' -o -name '*.deb' -o -name '*.AppImage' -o -name '*.dmg' \) -exec cp {} release/ \;
+          ls -la release
 
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact }}
           path: out
           if-no-files-found: error
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+          target_commitish: ${{ github.sha }}
+          name: Ghostify ${{ github.event.inputs.tag || github.ref_name }}
+          files: release/*
+          fail_on_unmatched_files: true
