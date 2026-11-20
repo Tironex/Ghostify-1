@@ -1,0 +1,78 @@
+name: Build Ghostify
+
+# Builds installers for Windows, Linux and macOS on GitHub's own machines, so nothing has to be
+# installed locally. Start it by hand: Actions tab -> "Build Ghostify" -> Run workflow.
+# Pushing a tag like v0.1.0 builds as well.
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: Windows, os: windows-latest, artifact: ghostify-windows }
+          - { name: Linux, os: ubuntu-22.04, artifact: ghostify-linux }
+          - { name: macOS, os: macos-latest, artifact: ghostify-macos }
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Linux system libraries
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev librsvg2-dev libayatana-appindicator3-dev patchelf
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: packages/ui/pnpm-lock.yaml
+
+      - name: Rust
+        run: rustup toolchain install stable --profile minimal && rustup default stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            . -> target
+            src-tauri -> target
+
+      - name: Interface dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: packages/ui
+
+      - name: Tauri CLI
+        run: cargo install tauri-cli --version "^2" --locked
+
+      - name: Build desktop app
+        run: cargo tauri build
+        working-directory: src-tauri
+
+      - name: Build command line tool
+        run: cargo build --release -p ghostify-app --bin ghostify
+
+      - name: Collect files
+        shell: bash
+        run: |
+          mkdir -p out
+          cp -r src-tauri/target/release/bundle out/bundle
+          cp target/release/ghostify out/ 2>/dev/null || cp target/release/ghostify.exe out/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: out
+          if-no-files-found: error
