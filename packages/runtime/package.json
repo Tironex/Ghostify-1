@@ -1,0 +1,19 @@
+{
+  "name": "@ghostify/runtime",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Loader that runs inside the patched Spotify client",
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^30.0.0",
+    "esbuild": "^0.25.0",
+    "jsdom": "^26.0.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.1.0"
+  }
+}
