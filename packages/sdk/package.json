@@ -1,0 +1,8 @@
+{
+  "name": "@ghostify/sdk",
+  "version": "0.1.0",
+  "description": "TypeScript types for Ghostify plugins (the global `ghostify` object)",
+  "types": "index.d.ts",
+  "files": ["index.d.ts", "plugin.schema.json"],
+  "license": "MIT"
+}
