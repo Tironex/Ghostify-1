@@ -1,0 +1,22 @@
+[package]
+name = "ghostify-extras"
+description = "Player state, lyrics, Discord presence and hotkeys"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+ghostify-core.workspace = true
+ghostify-db.workspace = true
+ghostify-bridge.workspace = true
+ghostify-market.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2 = "0.10.9"
+tokio = { workspace = true, features = ["sync", "rt", "time", "macros"] }
+tracing.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true

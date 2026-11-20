@@ -1,0 +1,27 @@
+[package]
+name = "ghostify-patch"
+description = "Patch engine of Ghostify: signed rules, verified backups, atomic patching, recovery and automatic repatch"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+ghostify-core.workspace = true
+ghostify-db.workspace = true
+ghostify-spotify.workspace = true
+base64 = "0.23.1"
+ed25519-dalek = "2.1.1"
+notify = "8.2.0"
+regex = "1.13.1"
+serde.workspace = true
+serde_json.workspace = true
+sha2 = "0.10.9"
+tokio.workspace = true
+tracing.workspace = true
+zip = { version = "4.2.0", default-features = false, features = ["deflate"] }
+
+[dev-dependencies]
+tempfile.workspace = true
+tokio = { workspace = true, features = ["rt", "macros", "time"] }
