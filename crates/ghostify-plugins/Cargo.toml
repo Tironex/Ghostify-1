@@ -1,0 +1,21 @@
+[package]
+name = "ghostify-plugins"
+description = "Plugin system of Ghostify: manifests, permissions, malware scanner, versioned store with crash rollback, bridge methods"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+ghostify-core.workspace = true
+ghostify-db.workspace = true
+ghostify-bridge.workspace = true
+regex = "1.13.1"
+serde.workspace = true
+serde_json.workspace = true
+sha2 = "0.10.9"
+tokio = { workspace = true, features = ["rt", "macros", "time", "sync"] }
+tracing.workspace = true
+zip = { version = "4.2.0", default-features = false, features = ["deflate"] }
+tempfile.workspace = true
