@@ -1,0 +1,34 @@
+[package]
+name = "ghostify-app"
+description = "Ghostify application layer: wires patching, bridge, themes, plugins and marketplace; command line interface"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[[bin]]
+name = "ghostify"
+path = "src/bin/ghostify.rs"
+
+[dependencies]
+ghostify-core.workspace = true
+ghostify-db.workspace = true
+ghostify-spotify.workspace = true
+ghostify-patch.workspace = true
+ghostify-bridge.workspace = true
+ghostify-themes.workspace = true
+ghostify-plugins.workspace = true
+ghostify-market.workspace = true
+ghostify-extras.workspace = true
+clap = { version = "4.5", features = ["derive"] }
+serde.workspace = true
+serde_json.workspace = true
+tokio = { workspace = true, features = ["signal", "rt-multi-thread", "macros", "sync", "time", "fs"] }
+tracing.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+tokio-tungstenite = "0.30.0"
+futures-util = "0.3.34"
+zip = { version = "4.2.0", default-features = false, features = ["deflate"] }
